@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Demo</title>
+        <script src="../bower_components/requirejs/require.js"></script>
+        <script>
+            require(['../dist/trakt'], function(trakt){
+                console.log(trakt['oauth'].authorizeUrl());
+
+                trakt = new trakt(
+                    '574886e8a654562ba1453788c0c076adb53b78fc7425135e0db10dff01f51809',
+                    '1421a6b546de8ab27e3fe00596708ebc0051fe8fe856eedfb827ebd22b04372b'
+                );
+
+                console.log(trakt['oauth'].authorizeUrl());
+            });
+        </script>
+    </head>
+    <body>
+    </body>
+</html>

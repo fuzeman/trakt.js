@@ -1,0 +1,17 @@
+{
+  "name": "trakt.js",
+  "version": "1.0.0",
+  "scripts": {
+    "test": "node node_modules/karma/bin/karma start --single-run --browsers PhantomJS"
+  },
+  "devDependencies": {
+    "gulp": "^3.8.0",
+    "requirejs": "^2.1.14",
+    "chai": "~2.2.0",
+    "karma": "^0.12.16",
+    "karma-chai": "~0.1.0",
+    "karma-mocha": "^0.1.3",
+    "karma-phantomjs-launcher": "~0.1.4",
+    "karma-requirejs": "~0.2.2"
+  }
+}
