@@ -23,12 +23,14 @@ define([
     }
 
     // Object Contructor
-    function trakt(client_id, client_secret) {
+    function Trakt(client_id, client_secret) {
         this.baseUrl = baseUrl;
         this.version = version;
 
         this.id = client_id;
         this.secret = client_secret;
+
+        this.authorization = null;
 
         this._ = new _();
         this._.client = this;
@@ -38,17 +40,19 @@ define([
     }
 
     // Properties
-    trakt._ = _;
-    trakt.baseUrl = baseUrl;
-    trakt.version = version;
+    Trakt._ = _;
+    Trakt.baseUrl = baseUrl;
+    Trakt.version = version;
 
-    trakt.id = '574886e8a654562ba1453788c0c076adb53b78fc7425135e0db10dff01f51809';
-    trakt.secret = '1421a6b546de8ab27e3fe00596708ebc0051fe8fe856eedfb827ebd22b04372b';
+    Trakt.id = '574886e8a654562ba1453788c0c076adb53b78fc7425135e0db10dff01f51809';
+    Trakt.secret = '1421a6b546de8ab27e3fe00596708ebc0051fe8fe856eedfb827ebd22b04372b';
 
-    trakt._.client = trakt;
+    Trakt.authorization = null;
+
+    Trakt._.client = Trakt;
 
     // expose interfaces in `trakt`
-    exposeInterfaces(trakt);
+    exposeInterfaces(Trakt);
 
-    return trakt;
+    return Trakt;
 });

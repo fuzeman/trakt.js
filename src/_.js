@@ -32,6 +32,14 @@ define(['httpinvoke', 'when'], function(httpinvoke, when) {
         config.headers['trakt-api-key'] = this.client.id;
         config.headers['trakt-api-version'] = 2;
 
+        if(typeof config.headers['Authorization'] === 'undefined') {
+            // Ensure client has a valid `authorization` parameter
+            if(this.client.authorization != null && this.client.authorization.access_token != null) {
+                // Set OAuth authorization header
+                config.headers['Authorization'] = 'Bearer ' + this.client.authorization.access_token;
+            }
+        }
+
         var deferred = when.defer();
 
         if(config.headers['trakt-api-key'] == null) {
