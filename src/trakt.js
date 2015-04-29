@@ -1,6 +1,8 @@
 define([
     '_',
 
+    'interfaces/users/settings',
+
     'interfaces/oauth',
     'interfaces/scrobble',
     'interfaces/search'
