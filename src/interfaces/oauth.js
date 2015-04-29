@@ -45,7 +45,11 @@ define(['_', 'when'], function(_, when) {
 
         return this._.post('oauth/token', {
             input: request,
-            inputType: 'json'
+            inputType: 'json',
+
+            headers: {
+                'Content-Type': 'application/json'
+            }
         });
     };
 
