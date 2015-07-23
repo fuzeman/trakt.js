@@ -52,10 +52,10 @@ define(['httpinvoke', 'when'], function(httpinvoke, when) {
             if(response.statusCode >= 200 && response.statusCode <= 299) {
                 deferred.resolve(response.body);
             } else {
-                deferred.reject('server returned status code: ' + response.statusCode);
+                deferred.reject(response.body, response.statusCode, response.headers, null, response.statusText);
             }
-        }, function(error) {
-            deferred.reject(error);
+        }, function(statusText) {
+            deferred.reject(null, null, null, null, statusText);
         });
 
         return deferred.promise;
