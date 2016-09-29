@@ -1,4 +1,4 @@
-define(['_', 'when'], function(_, when) {
+define(['../_', 'when'], function(_, when) {
     function OAuthInterface(_) {
         this._ = _;
     }

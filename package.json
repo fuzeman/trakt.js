@@ -1,8 +1,12 @@
 {
-  "name": "trakt.js",
+  "name": "@fuzeman/trakt",
   "version": "1.0.0",
   "scripts": {
     "test": "node node_modules/karma/bin/karma start --single-run --browsers PhantomJS"
+  },
+  "dependencies": {
+    "httpinvoke": "~1.4.0",
+    "when": "~3.7.2"
   },
   "devDependencies": {
     "gulp": "^3.8.0",

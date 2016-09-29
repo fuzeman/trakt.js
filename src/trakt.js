@@ -1,11 +1,11 @@
 define([
-    '_',
+    './_',
 
-    'interfaces/users/settings',
+    './interfaces/users/settings',
 
-    'interfaces/oauth',
-    'interfaces/scrobble',
-    'interfaces/search'
+    './interfaces/oauth',
+    './interfaces/scrobble',
+    './interfaces/search'
 ], function(_) {
     var baseUrl = 'https://api-v2launch.trakt.tv',
         version = '1.0.0';

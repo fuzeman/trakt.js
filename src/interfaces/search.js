@@ -1,4 +1,4 @@
-define(['_', 'when'], function(_, when) {
+define(['../_', 'when'], function(_, when) {
     function SearchInterface(_) {
         this._ = _;
     }

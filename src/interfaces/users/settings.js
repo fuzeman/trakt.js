@@ -1,4 +1,4 @@
-define(['_'], function(_) {
+define(['../../_'], function(_) {
     function SettingsInterface(_) {
         this._ = _;
     }
