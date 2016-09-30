@@ -2,20 +2,35 @@
 <html>
     <head>
         <title>Demo</title>
+    </head>
+    <body>
+        <script src="../bower_components/jquery/dist/jquery.js"></script>
         <script src="../bower_components/requirejs/require.js"></script>
-        <script>
-            require(['../dist/trakt'], function(Trakt){
-                console.log(Trakt['oauth'].authorizeUrl());
 
-                var trakt = new Trakt(
+        <script>
+            require.config({
+                baseUrl: '../',
+                paths: {
+                    'lodash-amd': 'bower_components/lodash-amd/modern',
+                    'querystring': 'bower_components/querystring/querystring',
+                    'whatwg-fetch': 'bower_components/fetch/fetch',
+                },
+                shim: {
+                    'whatwg-fetch': {
+                        exports: 'fetch'
+                    }
+                },
+                waitSeconds: 15
+            });
+
+            require(['dist/bower/trakt.min'], function(trakt){
+                var client = window.client = new trakt.Client(
                     '574886e8a654562ba1453788c0c076adb53b78fc7425135e0db10dff01f51809',
                     '1421a6b546de8ab27e3fe00596708ebc0051fe8fe856eedfb827ebd22b04372b'
                 );
 
-                console.log(trakt['oauth'].authorizeUrl());
+                console.log(client['oauth'].authorizeUrl());
             });
         </script>
-    </head>
-    <body>
     </body>
 </html>

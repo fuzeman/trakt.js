@@ -1,29 +1,37 @@
 {
   "name": "trakt.js",
-  "version": "1.0.0",
+  "version": "2.0.0-alpha.1",
+  "description": "Javascript API wrapper for Trakt.tv",
+  "homepage": "https://github.com/fuzeman/trakt.js",
+  "license": "MIT",
+  "main": "dist/bower/trakt.js",
+  "moduleType": "amd",
 
-  "main": "dist/trakt.js",
+  "authors": [
+    "Dean Gardiner <me@dgardiner.net>"
+  ],
 
   "repository": {
     "type": "git",
     "url": "git://github.com/fuzeman/trakt.js.git"
   },
 
-  "devDependencies": {
-    "httpinvoke": "~1.4.0",
-    "when": "~3.7.2",
+  "dependencies": {
+    "crypto-js": "^3.1.6",
+    "fetch": "^1.0.0",
+    "lodash-amd": "^3.10.2",
+    "querystring": "^3.46.1"
+  },
 
-    "requirejs": "~2.1.10",
-    "almond": "~0.2.9",
-    "mocha": "~1.17.0",
-    "chai": "~1.8.1"
+  "devDependencies": {
+    "jquery": "^3.1.1",
+    "requirejs": "~2.1.10"
   },
 
   "ignore": [
     "demo",
     "src",
     "test",
-    
     ".travis.yml",
     "gulpfile.js",
     "karma.conf.js",

@@ -1,40 +1,21 @@
-define(['../_'], function(_) {
-    function ScrobbleInterface(_) {
-        this._ = _;
-    }
+import Interface from './base';
 
-    ScrobbleInterface.prototype.start = function(request) {
-        return this._.post('scrobble/start', {
-            input: request,
-            inputType: 'json',
-
-            headers: {
-                'Content-Type': 'application/json'
-            }
+export default class ScrobbleInterface extends Interface {
+    start(data) {
+        return this.http.post('scrobble/start', {
+            body: data
         });
     };
 
-    ScrobbleInterface.prototype.pause = function(request) {
-        return this._.post('scrobble/pause', {
-            input: request,
-            inputType: 'json',
-
-            headers: {
-                'Content-Type': 'application/json'
-            }
+    pause(data) {
+        return this.http.post('scrobble/pause', {
+            body: data
         });
     };
 
-    ScrobbleInterface.prototype.stop = function(request) {
-        return this._.post('scrobble/stop', {
-            input: request,
-            inputType: 'json',
-
-            headers: {
-                'Content-Type': 'application/json'
-            }
+    stop(data) {
+        return this.http.post('scrobble/stop', {
+            body: data
         });
     };
-
-    _.register('scrobble', ScrobbleInterface);
-});
+}

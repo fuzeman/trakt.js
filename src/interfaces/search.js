@@ -1,34 +1,35 @@
-define(['../_', 'when'], function(_, when) {
-    function SearchInterface(_) {
-        this._ = _;
-    }
+import {isDefined} from '../core/helpers';
+import Interface from './base';
 
-    SearchInterface.prototype.lookup = function(id_type, id) {
-        var parameters = this._.cleanParameters({
-            id_type: id_type,
-            id: id
-        });
-
-        if(parameters.id_type == null || parameters.id == null) {
-            return when.reject('"id_type" and "id" parameters are required');
+export default class SearchInterface extends Interface {
+    lookup(type, id) {
+        if(!isDefined(type)) {
+            throw new Error('Invalid value provided for the "type" parameter');
         }
 
-        return this._.get('search?' + this._.toQueryString(parameters));
-    };
-
-    SearchInterface.prototype.query = function(query, type, year) {
-        var parameters = this._.cleanParameters({
-            query: query,
-            type: type,
-            year: year
-        });
-
-        if(parameters.query == null) {
-            return when.reject('"query" parameter is required');
+        if(!isDefined(id)) {
+            throw new Error('Invalid value provided for the "id" parameter');
         }
 
-        return this._.get('search?' + this._.toQueryString(parameters));
+        return this.http.get('search', {
+            params: {
+                'id_type': type,
+                'id': id
+            }
+        });
     };
 
-    _.register('search', SearchInterface);
-});
+    query(query, type, year) {
+        if(!isDefined(query)) {
+            throw new Error('Invalid value provided for the "query" parameter');
+        }
+
+        return this.http.get('search', {
+            params: {
+                'query': query,
+                'type': type,
+                'year': year
+            }
+        });
+    };
+}

@@ -1,57 +1,43 @@
-define(['../_', 'when'], function(_, when) {
-    function OAuthInterface(_) {
-        this._ = _;
+import {isDefined} from '../core/helpers';
+import Interface from './base';
+
+export default class OAuthInterface extends Interface {
+    authorizeUrl(redirectUri, state) {
+        if(!isDefined(this._client.key)) {
+            throw new Error('Missing required client "key" parameter');
+        }
+
+        return this._client.siteUrl + 'oauth/authorize?' + this.http.encodeParameters({
+            'client_id': this._client.key,
+
+            'response_type': 'code',
+            'redirect_uri': isDefined(redirectUri) ? redirectUri : 'urn:ietf:wg:oauth:2.0:oob',
+            'state': state
+        });
     }
 
-    OAuthInterface.prototype.authorizeUrl = function(redirect_uri, state) {
-        var parameters = this._.cleanParameters({
-            response_type: 'code',
-            client_id: this._.client.id,
-
-            redirect_uri: typeof redirect_uri !== 'undefined' ? redirect_uri : 'urn:ietf:wg:oauth:2.0:oob',
-            state: state
-        });
-
-        if(parameters.client_id == null) {
-            console.error('missing client "id" parameter');
-            return null;
+    token(code, redirectUri, grantType) {
+        if(!isDefined(this._client.key)) {
+            throw new Error('Missing required client "key" parameter');
         }
 
-        if(parameters.redirect_uri == null) {
-            console.error('invalid "redirect_uri" parameter provided');
-            return null;
+        if(!isDefined(this._client.secret)) {
+            throw new Error('Missing required client "secret" parameter');
         }
 
-        return this._.getSiteUrl() + '/oauth/authorize?' + this._.toQueryString(parameters);
-    };
-
-    OAuthInterface.prototype.token = function(code, redirect_uri, grant_type) {
-        var request = this._.cleanParameters({
-            client_id: this._.client.id,
-            client_secret: this._.client.secret,
-
-            code: code,
-            redirect_uri: typeof redirect_uri !== 'undefined' ? redirect_uri : 'urn:ietf:wg:oauth:2.0:oob',
-            grant_type: typeof grant_type !== 'undefined' ? grant_type : 'authorization_code'
-        });
-
-        if(request.client_id == null || request.client_secret == null) {
-            return when.reject('missing client "id" or "secret" parameter');
+        if(!isDefined(code)) {
+            throw new Error('Invalid value provided for the "code" parameter');
         }
 
-        if(request.code == null || request.redirect_uri == null || request.grant_type == null) {
-            return when.reject('invalid "code", "redirect_uri" or "grant_type" parameter provided');
-        }
+        return this.http.post('oauth/token', {
+            body: {
+                'client_id': this._client.key,
+                'client_secret': this._client.secret,
 
-        return this._.post('oauth/token', {
-            input: request,
-            inputType: 'json',
-
-            headers: {
-                'Content-Type': 'application/json'
+                'code': code,
+                'redirect_uri': isDefined(redirectUri) ? redirectUri : 'urn:ietf:wg:oauth:2.0:oob',
+                'grant_type': isDefined(grantType) ? grantType : 'authorization_code'
             }
         });
-    };
-
-    _.register('oauth', OAuthInterface);
-});
+    }
+}
