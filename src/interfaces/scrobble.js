@@ -1,21 +1,42 @@
 import Interface from './base';
 
 export default class ScrobbleInterface extends Interface {
-    start(data) {
+    start(item, progress, options) {
         return this.http.post('scrobble/start', {
-            body: data
+            ...options,
+            authenticated: true,
+            includeAppParameters: true,
+
+            body: {
+                ...item,
+                progress: progress
+            }
         });
     };
 
-    pause(data) {
+    pause(item, progress, options) {
         return this.http.post('scrobble/pause', {
-            body: data
+            ...options,
+            authenticated: true,
+            includeAppParameters: true,
+
+            body: {
+                ...item,
+                progress: progress
+            }
         });
     };
 
-    stop(data) {
+    stop(item, progress, options) {
         return this.http.post('scrobble/stop', {
-            body: data
+            ...options,
+            authenticated: true,
+            includeAppParameters: true,
+
+            body: {
+                ...item,
+                progress: progress
+            }
         });
     };
 }
