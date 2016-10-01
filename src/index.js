@@ -23,27 +23,22 @@ if(!isDefined(Promise)) {
 export class Client {
     constructor(key, secret, options) {
         options = setDefaults(options, {
+            application: {
+                name: 'trakt.js',
+                version: Build.Version,
+                date: Build.Date
+            },
+
             debug: false,
 
-            onSessionRefreshed: null,
-
             session: null,
-            sessionKey: null
+            sessionKey: null,
+            onSessionRefreshed: null
         });
 
         // Application keys
         this.key = key || null;
         this.secret = secret || null;
-
-        // Application metadata
-        this.application = {
-            name: 'trakt.js',
-            version: Build.Version,
-            date: Build.Date
-        };
-
-        // Build metadata
-        this.build = Build;
 
         // Session
         this.session = null;
@@ -58,7 +53,10 @@ export class Client {
         this.onSessionRefreshed = options.onSessionRefreshed;
 
         // Public variables
+        this.application = options.application;
+        this.build = Build;
         this.debug = options.debug;
+
         this.http = null;
 
         // Private variables
