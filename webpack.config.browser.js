@@ -1,9 +1,10 @@
-var merge = require('merge');
+import Base from './webpack.config.base';
 
-var base = require('./webpack.config.base');
+export default {
+    ...Base,
 
-module.exports = merge.recursive(true, base, {
     output: {
+        ...Base.output,
         path: __dirname + '/build/browser'
     }
-});
+};

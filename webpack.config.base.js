@@ -1,23 +1,11 @@
-var path = require('path');
+import path from 'path';
 
-
-module.exports = {
+export default {
     devtool: 'source-map',
 
     entry: [
-        'whatwg-fetch',
         __dirname + '/src/index.js'
     ],
-
-    output: {
-        filename: 'trakt.js',
-
-        library: 'trakt',
-        libraryTarget: 'umd',
-
-        devtoolModuleFilenameTemplate: '[resource-path]',
-        devtoolFallbackModuleFilenameTemplate: '[resource-path]?[hash]'
-    },
 
     module: {
         loaders: [
@@ -35,6 +23,16 @@ module.exports = {
                 exclude: /node_modules/
             }
         ]
+    },
+
+    output: {
+        filename: 'trakt.js',
+
+        library: 'trakt',
+        libraryTarget: 'umd',
+
+        devtoolModuleFilenameTemplate: '[resource-path]',
+        devtoolFallbackModuleFilenameTemplate: '[resource-path]?[hash]'
     },
 
     resolve: {
