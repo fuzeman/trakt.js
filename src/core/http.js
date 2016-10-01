@@ -26,25 +26,94 @@ export default class HttpClient {
             headers: {},
             params: {},
 
+            // Body
             body: null,
             bodyType: 'json',
 
+            // Authentication
             authenticated: false,
-            sessionKey: this._client.getSessionKey()
+            session: null,
+
+            // Application
+            application: null,
+            includeAppParameters: false
         }, options || {});
+
+        if(!isDefined(options.application)) {
+            options.application = this._client.application;
+        }
 
         // Set request headers
         options.headers['trakt-api-key'] = this._client.key;
         options.headers['trakt-api-version'] = 2;
 
+        // Authentication
         if(options.authenticated) {
-            // Add session key
-            if(!isDefined(options.sessionKey)) {
-                throw new Error('Missing required "sessionKey" parameter');
+            if(!isDefined(options.session)) {
+                // Retrieve current client session
+                return this._client.getSession().then((session) => {
+                    if(!isDefined(session)) {
+                        // Invalid session returned
+                        return Promise.reject(new Error(
+                            'Authentication required, but an invalid session was returned'
+                        ));
+                    }
+
+                    // Fire request with `session`
+                    return this.request(method, path, {
+                        ...options,
+                        session: session
+                    });
+                }, (error) => {
+                    // No session available
+                    return Promise.reject(new Error(
+                        'Authentication required, but no session is available (error: ' + error.message + ')'
+                    ));
+                });
             }
 
-            options.headers['Authorization'] = 'Bearer ' + this._client.session.access_token;
+            // Validate session
+            if(!isDefined(options.session.access_token)) {
+                return Promise.reject(new Error(
+                    'Invalid session provided, expected an object with the "access_token" property'
+                ));
+            }
+
+            // Set authorization header
+            options.headers['Authorization'] = 'Bearer ' + options.session.access_token;
         }
+
+        // Application metadata
+        if(!isDefined(options.application)) {
+            options.application = {
+                name: 'trakt.js',
+                version: this._client.build.version,
+                date: this._client.build.date
+            };
+        }
+
+        // Application parameters
+        if(options.includeAppParameters === true) {
+            // Validate request method
+            if(method !== 'POST') {
+                return Promise.reject(new Error(
+                    '"includeAppParameters" can only be used with POST requests'
+                ));
+            }
+
+            // Version
+            if(isDefined(options.application.version)) {
+                options.body['app_version'] = options.application.version;
+            }
+
+            // Date
+            if(isDefined(options.application.date)) {
+                options.body['app_date'] = options.application.date;
+            }
+        }
+
+        // User Agent
+        options.headers['User-Agent'] = this._buildUserAgent(options.application);
 
         // Process body
         if(isDefined(options.body)) {
@@ -55,6 +124,10 @@ export default class HttpClient {
             } else {
                 throw new Error('Invalid "bodyType" provided: "' + options.bodyType + '"');
             }
+        }
+
+        if(this._client.debug) {
+            console.debug('[trakt.js] %s %o (options: %O)', method, path, options);
         }
 
         // Send request
@@ -78,5 +151,30 @@ export default class HttpClient {
 
         // Encode parameters to string
         return querystring.encode(parameters);
+    }
+
+    _buildUserAgent(application) {
+        let result = '';
+
+        // Add application name (or "Unknown")
+        if(isDefined(application.name)) {
+            result += application.name;
+        } else {
+            result += 'Unknown';
+        }
+
+        // Add fragments (version, date)
+        let fragments = [
+            application.version,
+            application.date
+        ].filter((fragment) => {
+            return isDefined(fragment);
+        });
+
+        if(fragments.length < 1) {
+            return result;
+        }
+
+        return result + ' (' + fragments.join('; ') + ')';
     }
 }
