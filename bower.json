@@ -1,6 +1,6 @@
 {
   "name": "trakt.js",
-  "version": "2.0.0-alpha.1",
+  "version": "2.0.0-alpha.2",
   "description": "Javascript API wrapper for Trakt.tv",
   "homepage": "https://github.com/fuzeman/trakt.js",
   "license": "MIT",

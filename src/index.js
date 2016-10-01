@@ -4,7 +4,7 @@ import Interfaces from './interfaces';
 import Interface from './interfaces/base';
 
 export const Build = {
-    Version: '2.0.0-alpha.1',
+    Version: '2.0.0-alpha.2',
     Date: '2016-10-01'
 };
 
