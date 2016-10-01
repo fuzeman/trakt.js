@@ -2,7 +2,7 @@ import {isDefined} from '../core/helpers';
 import Interface from './base';
 
 export default class SearchInterface extends Interface {
-    lookup(type, id) {
+    lookup(type, id, options) {
         if(!isDefined(type)) {
             throw new Error('Invalid value provided for the "type" parameter');
         }
@@ -12,6 +12,7 @@ export default class SearchInterface extends Interface {
         }
 
         return this.http.get('search', {
+            ...options,
             params: {
                 'id_type': type,
                 'id': id
@@ -19,12 +20,13 @@ export default class SearchInterface extends Interface {
         });
     };
 
-    query(query, type, year) {
+    query(query, type, year, options) {
         if(!isDefined(query)) {
             throw new Error('Invalid value provided for the "query" parameter');
         }
 
         return this.http.get('search', {
+            ...options,
             params: {
                 'query': query,
                 'type': type,
