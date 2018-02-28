@@ -1,6 +1,7 @@
 import {isDefined} from '../core/helpers';
 import Interface from './base';
 
+
 export default class OAuthInterface extends Interface {
     authorizeUrl(redirectUri, state) {
         if(!isDefined(this._client.key)) {

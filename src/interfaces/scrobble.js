@@ -1,5 +1,6 @@
 import Interface from './base';
 
+
 export default class ScrobbleInterface extends Interface {
     start(item, progress, options) {
         return this.http.post('scrobble/start', {

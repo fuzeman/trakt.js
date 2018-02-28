@@ -1,7 +1,8 @@
-import {isDefined} from './helpers';
-
 import merge from 'lodash-amd/merge';
 import querystring from 'querystring';
+
+import {isDefined} from './helpers';
+
 
 export default class HttpClient {
     constructor(client, baseUrl) {

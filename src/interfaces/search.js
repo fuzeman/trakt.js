@@ -1,6 +1,7 @@
 import {isDefined} from '../core/helpers';
 import Interface from './base';
 
+
 export default class SearchInterface extends Interface {
     lookup(type, id, options) {
         if(!isDefined(type)) {
