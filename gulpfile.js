@@ -1,12 +1,12 @@
-import babel from 'gulp-babel';
-import del from 'del';
-import flatten from 'gulp-flatten';
-import gulp from 'gulp';
-import gutil from 'gulp-util';
-import replace from 'gulp-replace';
-import sourcemaps from 'gulp-sourcemaps';
-import webpack from 'webpack';
-import WebpackDevServer from 'webpack-dev-server';
+var del = require('del');
+var flatten = require('gulp-flatten');
+var fs = require('fs');
+var gulp = require('gulp');
+var gutil = require('gulp-util');
+var merge = require('merge');
+var replace = require('gulp-replace');
+var webpack = require('webpack');
+
 
 gulp.task('build', [
     'build:amd',
@@ -20,13 +20,14 @@ gulp.task('webpack', [
     'webpack:browser'
 ]);
 
-// region Build
-
 // region Transpile
 
 gulp.task('build:transpile', [
     'clean:lib'
 ], () => {
+    var babel = require('gulp-babel');
+    var sourcemaps = require('gulp-sourcemaps');
+
     return gulp.src('src/**/*.js')
         .pipe(sourcemaps.init())
         .pipe(babel())
@@ -61,13 +62,13 @@ gulp.task('webpack:amd', [
 gulp.task('webpack:amd:normal', [
     'clean:build:amd:normal'
 ], (done) => {
-    build(require('./webpack.config.amd'), done);
+    webpackBuild(require('./webpack.config.amd'), done);
 });
 
 gulp.task('webpack:amd:minified', [
     'clean:build:amd:minified'
 ], (done) => {
-    build(require('./webpack.config.amd'), done, {
+    webpackBuild(require('./webpack.config.amd'), done, {
         minify: true
     });
 });
@@ -114,13 +115,13 @@ gulp.task('webpack:bower', [
 gulp.task('webpack:bower:normal', [
     'clean:build:bower:normal'
 ], (done) => {
-    build(require('./webpack.config.bower'), done);
+    webpackBuild(require('./webpack.config.bower'), done);
 });
 
 gulp.task('webpack:bower:minified', [
     'clean:build:bower:minified'
 ], (done) => {
-    build(require('./webpack.config.bower'), done, {
+    webpackBuild(require('./webpack.config.bower'), done, {
         minify: true
     });
 });
@@ -167,13 +168,13 @@ gulp.task('webpack:browser', [
 gulp.task('webpack:browser:normal', [
     'clean:build:browser:normal'
 ], (done) => {
-    build(require('./webpack.config.browser'), done);
+    webpackBuild(require('./webpack.config.browser'), done);
 });
 
 gulp.task('webpack:browser:minified', [
     'clean:build:browser:minified'
 ], (done) => {
-    build(require('./webpack.config.browser'), done, {
+    webpackBuild(require('./webpack.config.browser'), done, {
         minify: true
     });
 });
@@ -200,72 +201,42 @@ gulp.task('clean:dist:browser', () => {
 
 // endregion
 
-// endregion
-
-// region Server
-
-gulp.task('server', () => {
-    var compiler = getCompiler(require('./webpack.config.bower'));
-    var server = new WebpackDevServer(compiler, {});
-
-    // Start server
-    server.listen(8080, "localhost", function() {
-    });
-});
-
-// endregion
-
 // region Helpers
 
-function build(config, callback, options) {
-    getCompiler(config, options).run(function(err, stats) {
-        if (err) {
+function webpackBuild(config, callback, options) {
+    options = typeof options !== 'undefined' && options !== null ? options : {};
+
+    // Clone configuration
+    config = merge(true, {
+        plugins: []
+    }, config);
+
+    // Process options
+    if(options.minify) {
+        // Enable uglify plugin
+        config.plugins.push(new webpack.optimize.UglifyJsPlugin({
+            minimize: true,
+            sourceMap: true
+        }));
+
+        // Update destination directory
+        config.output.path += '/minified';
+
+        // Update filename
+        config.output.filename = 'trakt.min.js';
+    } else {
+        config.output.path += '/normal';
+    }
+
+    // Build module
+    webpack(config, function(err, stats) {
+        if(err) {
             throw new gutil.PluginError("webpack", err);
         }
 
         gutil.log("[webpack]", stats.toString({}));
         callback();
     });
-}
-
-function getCompiler(config, options) {
-    options = typeof options !== 'undefined' && options !== null ? options : {};
-
-    // Process options
-    if(options.minify) {
-        // Enable minified output
-        config = {
-            ...config,
-
-            output: {
-                ...config.output,
-                filename: 'trakt.min.js',
-                path: config.output.path + '/minified'
-            },
-
-            plugins: [
-                ...config.plugins,
-
-                // Enable uglify plugin
-                new webpack.optimize.UglifyJsPlugin({
-                    minimize: true
-                })
-            ]
-        };
-    } else {
-        // Update output directory
-        config = {
-            ...config,
-
-            output: {
-                ...config.output,
-                path: config.output.path + '/normal'
-            }
-        };
-    }
-
-    // Construct webpack compiler
-    return webpack(config);
 }
 
 // endregion

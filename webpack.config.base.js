@@ -1,29 +1,13 @@
-import path from 'path';
+var path = require('path');
 
-export default {
+
+module.exports = {
     devtool: 'source-map',
 
     entry: [
+        'whatwg-fetch',
         __dirname + '/src/index.js'
     ],
-
-    module: {
-        loaders: [
-            {
-                test: /(\.jsx|\.js)$/,
-                loader: 'babel',
-                include: [
-                    path.resolve(__dirname, 'node_modules/lodash-es'),
-                    path.resolve(__dirname, 'src')
-                ]
-            },
-            {
-                test: /(\.jsx|\.js)$/,
-                loader: 'eslint-loader',
-                exclude: /node_modules/
-            }
-        ]
-    },
 
     output: {
         filename: 'trakt.js',
@@ -35,13 +19,47 @@ export default {
         devtoolFallbackModuleFilenameTemplate: '[resource-path]?[hash]'
     },
 
-    resolve: {
-        root: path.resolve('./src'),
-        extensions: ['', '.js'],
+    module: {
+        rules: [
+            {
+                test: /\.js$/,
+                include: [
+                    path.resolve(__dirname, 'src')
+                ],
 
-        alias: {}
+                enforce: 'pre',
+                use: [
+                    {
+                        loader: 'eslint-loader'
+                    }
+                ]
+            },
+            {
+                test: /\.js$/,
+                include: [
+                    path.resolve(__dirname, 'src')
+                ],
+
+                use: [
+                    {
+                        loader: 'babel-loader',
+                        options: {
+                            plugins: [
+                                'add-module-exports'
+                            ],
+                            presets: [
+                                '@babel/env'
+                            ]
+                        }
+                    }
+                ]
+            }
+        ]
     },
 
-    externals: [],
-    plugins: []
+    resolve: {
+        modules: [
+            path.resolve('./node_modules')
+        ]
+    }
 };

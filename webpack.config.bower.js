@@ -1,16 +1,14 @@
-import Base from './webpack.config.base';
+var merge = require('merge');
 
-export default {
-    ...Base,
+var base = require('./webpack.config.base');
 
+module.exports = merge.recursive(true, base, {
     output: {
-        ...Base.output,
         path: __dirname + '/build/bower'
     },
 
     externals: [
         {'lodash-amd/merge': 'lodash-amd/object/merge'},
-        /^[a-z\-0-9\/]+$/,
-        ...Base.externals
+        /^[a-z\-0-9\/]+$/
     ]
-};
+});
